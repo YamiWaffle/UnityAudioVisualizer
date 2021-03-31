@@ -1,33 +1,43 @@
 ﻿using UnityEngine;
 
-[RequireComponent(typeof(AudioSource))]
-public class SpectrumDataProvider : MonoBehaviour
+namespace AudioVisualizer
 {
-    public const int Samples = 512;
-
-    public float[] SpectrumData => m_SpectrumData;
-
-    private void Update()
+    [RequireComponent(typeof(AudioSource))]
+    public class SpectrumDataProvider : MonoBehaviour
     {
-        _GetSpectrumDataFromAudioSource();
-    }
+        [SerializeField]
+        private int m_SampleSize = 512;
 
-    private void _GetSpectrumDataFromAudioSource()
-    {
-        AudioSource?.GetSpectrumData(m_SpectrumData, 0, FFTWindow.BlackmanHarris);
-    }
+        public int SampleSize => m_SampleSize;
+        public float[] SpectrumData => m_SpectrumData;
 
-    private float[] m_SpectrumData = new float[Samples];
-
-    private AudioSource m_AudioSource;
-    private AudioSource AudioSource
-    {
-        get
+        private void Awake()
         {
-            if (m_AudioSource == null)
-                m_AudioSource = GetComponent<AudioSource>();
+            m_SpectrumData = new float[m_SampleSize];
+        }
+        private void Update()
+        {
+            _GetSpectrumDataFromAudioSource();
+        }
 
-            return m_AudioSource;
+        private void _GetSpectrumDataFromAudioSource()
+        {
+            AudioSource.GetSpectrumData(m_SpectrumData, 0, FFTWindow.BlackmanHarris);
+        }
+
+        private float[] m_SpectrumData;
+
+        private AudioSource m_AudioSource;
+        private AudioSource AudioSource
+        {
+            get
+            {
+                if (m_AudioSource == null)
+                    m_AudioSource = GetComponent<AudioSource>();
+
+                return m_AudioSource;
+            }
         }
     }
 }
+
